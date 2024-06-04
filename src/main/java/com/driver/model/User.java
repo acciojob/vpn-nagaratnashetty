@@ -1,29 +1,45 @@
 package com.driver.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "user")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String username;
+
     private String password;
+
     private String originalIp;
-    private Boolean connected;
+
     private String maskedIp;
 
-    @JoinColumn
+    private Boolean connected;
+
     @ManyToMany
-    private List<ServiceProvider> serviceProviderList;
+    @JoinColumn
+    private List<ServiceProvider> serviceProviderList = new ArrayList<>();
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Country originalCountry; //This field remains unaffected even when vpn connection is made
+    private Country originalCountry;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Connection> connectionList;
+
+    public User(String username, String password, Country originalCountry) {
+        this.username = username;
+        this.password = password;
+        this.originalCountry = originalCountry;
+    }
+
+    public User() {
+    }
 
     public int getId() {
         return id;
@@ -57,20 +73,20 @@ public class User {
         this.originalIp = originalIp;
     }
 
-    public Boolean getConnected() {
-        return connected;
-    }
-
-    public void setConnected(Boolean connected) {
-        this.connected = connected;
-    }
-
     public String getMaskedIp() {
         return maskedIp;
     }
 
     public void setMaskedIp(String maskedIp) {
         this.maskedIp = maskedIp;
+    }
+
+    public Boolean getConnected() {
+        return connected;
+    }
+
+    public void setConnected(Boolean connected) {
+        this.connected = connected;
     }
 
     public List<ServiceProvider> getServiceProviderList() {
